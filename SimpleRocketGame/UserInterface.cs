@@ -66,33 +66,38 @@ namespace SimpleRocketGame
                 switch (response.KeyChar)
                 {
                     case '1':
-                        var success = false;
-                        while (!success)
+                        if (this.getIntInput("Please enter a positive whole number to count down from:", out var value, (x) => x > 0))
                         {
-                            Console.WriteLine("Please enter a positive whole number to count down from:");
-                            var userInput = Console.ReadLine();
-                            if (userInput.ToLower() == "back")
-                            {
-                                success = true;
-                                break; //could also use continue
-                            }
-                            if (int.TryParse(userInput, out var value))
-                            {
-                                if (value > 0)
-                                {
-                                    this.LocalRocket.LaunchTimer = value;
-                                    success = true;
-                                }
-                                else
-                                {
-                                    Console.WriteLine("Please enter a positive number");
-                                }
-                            }
-                            else
-                            {
-                                Console.WriteLine("Please enter a number, or back");
-                            }
+                            this.LocalRocket.LaunchTimer = value;
                         }
+
+                        //var success = false;
+                        //while (!success)
+                        //{
+                        //    Console.WriteLine("Please enter a positive whole number to count down from:");
+                        //    var userInput = Console.ReadLine();
+                        //    if (userInput.ToLower() == "back")
+                        //    {
+                        //        success = true;
+                        //        break; //could also use continue
+                        //    }
+                        //    if (int.TryParse(userInput, out var value))
+                        //    {
+                        //        if (value > 0)
+                        //        {
+                        //            this.LocalRocket.LaunchTimer = value;
+                        //            success = true;
+                        //        }
+                        //        else
+                        //        {
+                        //            Console.WriteLine("Please enter a positive number");
+                        //        }
+                        //    }
+                        //    else
+                        //    {
+                        //        Console.WriteLine("Please enter a number, or back");
+                        //    }
+                        //}
                         break;
                     case 'B':
                     case 'b':
@@ -100,6 +105,30 @@ namespace SimpleRocketGame
                         break;
                 }
             }
+        }
+
+        private Boolean getIntInput(String question, out int value, Predicate<int> conditionMatch = null)
+        {
+            var success = false;
+            value = 0;
+            while (!success)
+            {
+                Console.WriteLine(question);
+                var userInput = Console.ReadLine();
+                if (userInput.ToLower() == "back")
+                {
+                    return false;
+                }
+                else if (int.TryParse(userInput, out var parseValue))
+                {
+                    if (conditionMatch == null || conditionMatch(parseValue))
+                    {
+                        value = parseValue;
+                        return true;
+                    }
+                }
+            }
+            return success;
         }
 
         public void Simulate()
